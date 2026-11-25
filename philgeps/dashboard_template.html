@@ -1,0 +1,1208 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PhilGEPS Bid Notices</title>
+<script>window.__PHILGEPS_SERVER__ = __SERVER__;</script>
+<style>
+/* ---------------------------------------------------------------- tokens */
+:root {
+  color-scheme: light;
+  --page: #f2f2f0;
+  --sidebar: #e8e8e5;
+  --surface: #fcfcfb;
+  --surface-raised: #ffffff;
+  --ink: #0b0b0b;
+  --ink-2: #52514e;
+  --ink-3: #898781;
+  --grid: #e1e0d9;
+  --ring: rgba(11,11,11,0.10);
+  --wash: rgba(11,11,11,0.05);
+  --wash-strong: rgba(11,11,11,0.09);
+  --accent: #2a78d6;
+  --accent-ink: #1c5cab;
+  --accent-wash: rgba(42,120,214,0.12);
+  --muted-mark: #d5d4cd;
+  --good: #0ca30c; --good-ink: #006300; --warning: #fab219; --critical: #d03b3b;
+  --material: rgba(242,242,240,0.84);
+  --scrim: rgba(0,0,0,0.28);
+  --shadow-pop: 0 0 0 1px var(--ring), 0 18px 48px rgba(0,0,0,0.16), 0 2px 6px rgba(0,0,0,0.06);
+  --shadow-sheet: 0 24px 64px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.08);
+  --radius: 14px;
+  --side-w: 232px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --page: #0d0d0d; --sidebar: #141413; --surface: #1a1a19; --surface-raised: #222220;
+    --ink: #f0efec; --ink-2: #c3c2b7; --ink-3: #898781; --grid: #2c2c2a;
+    --ring: rgba(255,255,255,0.10); --wash: rgba(255,255,255,0.06); --wash-strong: rgba(255,255,255,0.11);
+    --accent: #3987e5; --accent-ink: #86b6ef; --accent-wash: rgba(57,135,229,0.18); --muted-mark: #3a3a37;
+    --good-ink: #0ca30c;
+    --material: rgba(13,13,13,0.84); --scrim: rgba(0,0,0,0.5);
+    --shadow-pop: 0 0 0 1px var(--ring), 0 18px 48px rgba(0,0,0,0.6);
+    --shadow-sheet: 0 24px 64px rgba(0,0,0,0.6), 0 2px 8px rgba(0,0,0,0.4);
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #0d0d0d; --sidebar: #141413; --surface: #1a1a19; --surface-raised: #222220;
+  --ink: #f0efec; --ink-2: #c3c2b7; --ink-3: #898781; --grid: #2c2c2a;
+  --ring: rgba(255,255,255,0.10); --wash: rgba(255,255,255,0.06); --wash-strong: rgba(255,255,255,0.11);
+  --accent: #3987e5; --accent-ink: #86b6ef; --accent-wash: rgba(57,135,229,0.18); --muted-mark: #3a3a37;
+  --good-ink: #0ca30c;
+  --material: rgba(13,13,13,0.84); --scrim: rgba(0,0,0,0.5);
+  --shadow-pop: 0 0 0 1px var(--ring), 0 18px 48px rgba(0,0,0,0.6);
+  --shadow-sheet: 0 24px 64px rgba(0,0,0,0.6), 0 2px 8px rgba(0,0,0,0.4);
+}
+
+/* ---------------------------------------------------------------- base */
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--page); color: var(--ink);
+  font: 100%/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+button, input, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+.num { font-variant-numeric: tabular-nums; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+[hidden] { display: none !important; }
+svg.i { width: 18px; height: 18px; flex: none; }
+.grow { flex: 1; }
+.btn {
+  border: 0; border-radius: 9px; background: var(--wash-strong); padding: 7px 14px; font-size: 0.8125rem; font-weight: 600;
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px; transition: transform 100ms ease-out, opacity 150ms ease;
+  text-decoration: none; color: var(--ink);
+}
+.btn:active { transform: scale(0.97); }
+.btn.primary { background: var(--accent); color: #fff; }
+.btn[disabled] { opacity: 0.45; cursor: default; transform: none; }
+.link { border: 0; background: transparent; color: var(--accent-ink); font-weight: 600; font-size: 0.8125rem; padding: 4px 2px; border-radius: 6px; }
+.icon-btn {
+  width: 34px; height: 34px; flex: none; border-radius: 10px; border: 0; background: transparent; color: var(--ink-2);
+  display: grid; place-items: center; transition: transform 100ms ease-out, background-color 120ms ease;
+}
+.icon-btn:hover { background: var(--wash); }
+.icon-btn:active { transform: scale(0.94); }
+
+/* ---------------------------------------------------------------- app layout */
+.app { display: grid; grid-template-columns: var(--side-w) minmax(0, 1fr); min-height: 100vh; }
+
+/* Sidebar: the heavier, solid structural layer. */
+.sidebar {
+  position: sticky; top: 0; height: 100vh; background: var(--sidebar);
+  display: flex; flex-direction: column; padding: 18px 12px 14px; gap: 18px;
+  box-shadow: inset -1px 0 0 var(--ring);
+}
+.brand { padding: 4px 10px 0; }
+.brand .name { font-size: 1.1875rem; font-weight: 700; letter-spacing: -0.015em; line-height: 1.2; }
+.brand .src { font-size: 0.75rem; color: var(--ink-3); font-weight: 500; }
+.nav { display: grid; gap: 2px; }
+.nav-item {
+  display: flex; align-items: center; gap: 10px; width: 100%; border: 0; background: transparent; text-align: left;
+  padding: 8px 10px; border-radius: 9px; font-size: 0.9375rem; font-weight: 550; color: var(--ink-2);
+  transition: background-color 120ms ease, color 120ms ease;
+}
+.nav-item:hover { background: var(--wash); }
+.nav-item:active { background: var(--wash-strong); }
+.nav-item[aria-selected="true"] { background: var(--accent-wash); color: var(--accent-ink); }
+.nav-item .count { margin-left: auto; font-size: 0.75rem; font-weight: 600; color: var(--ink-3); }
+.nav-item[aria-selected="true"] .count { color: var(--accent-ink); }
+.side-foot { margin-top: auto; display: grid; gap: 10px; }
+.scrape { background: var(--surface); border-radius: 12px; padding: 12px; box-shadow: 0 0 0 1px var(--ring); display: grid; gap: 8px; }
+.scrape-btn { width: 100%; padding: 8px 12px; }
+.scrape-btn svg { width: 16px; height: 16px; }
+.scrape-btn.running svg { animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.scrape-status { font-size: 0.75rem; color: var(--ink-2); line-height: 1.4; min-height: 1.4em; }
+.scrape-status b { color: var(--ink); font-weight: 650; }
+.scrape-status .st { display: inline-flex; align-items: center; gap: 5px; }
+.scrape-status .dot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+.scrape-status code { font: 0.6875rem/1.4 ui-monospace, SFMono-Regular, Menlo, monospace; background: var(--wash-strong); padding: 1px 5px; border-radius: 5px; color: var(--ink); white-space: nowrap; }
+.progress { height: 4px; border-radius: 2px; background: var(--wash-strong); overflow: hidden; visibility: hidden; }
+.progress.on { visibility: visible; }
+.progress span { display: block; height: 100%; width: 0; background: var(--accent); border-radius: 2px; transition: width 300ms cubic-bezier(0.25,1,0.5,1); }
+.progress.indeterminate span { width: 30%; animation: slide 1.2s ease-in-out infinite; }
+@keyframes slide { from { transform: translateX(-100%); } to { transform: translateX(340%); } }
+.side-meta { display: flex; align-items: center; gap: 4px; padding: 0 4px; font-size: 0.75rem; color: var(--ink-3); }
+
+/* ---------------------------------------------------------------- toolbar (material over content) */
+.content { min-width: 0; }
+.toolbar {
+  position: sticky; top: 0; z-index: 20; background: var(--material);
+  -webkit-backdrop-filter: blur(20px) saturate(180%); backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid transparent; transition: border-color 200ms ease;
+}
+.toolbar.scrolled { border-bottom-color: var(--ring); }
+.toolbar-inner { max-width: 1200px; margin: 0 auto; padding: 14px 28px 12px; }
+.toolbar-row { display: flex; align-items: center; gap: 12px; }
+.page-title { margin: 0; font-size: 1.5rem; line-height: 1.2; letter-spacing: -0.02em; font-weight: 700; }
+.search { position: relative; width: min(340px, 100%); }
+.search input {
+  width: 100%; height: 36px; border-radius: 10px; border: 0;
+  background: var(--wash-strong); padding: 0 12px 0 34px; font-size: 0.9375rem;
+}
+.search input::placeholder { color: var(--ink-3); }
+.search svg { position: absolute; left: 11px; top: 10px; width: 16px; height: 16px; color: var(--ink-3); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; padding-top: 10px; }
+.chips:empty { display: none; }
+.chip-x {
+  display: inline-flex; align-items: center; gap: 4px; border: 0; border-radius: 999px; padding: 4px 8px 4px 11px;
+  background: var(--accent-wash); color: var(--accent-ink); font-size: 0.75rem; font-weight: 600;
+  transition: transform 100ms ease-out;
+}
+.chip-x:active { transform: scale(0.96); }
+.chip-x svg { width: 14px; height: 14px; opacity: 0.8; }
+
+/* ---------------------------------------------------------------- filter & sort popover */
+.filter-wrap { position: relative; }
+.filter-btn {
+  height: 36px; border: 0; border-radius: 10px; background: var(--wash-strong); padding: 0 12px;
+  display: inline-flex; align-items: center; gap: 7px; font-size: 0.875rem; font-weight: 600;
+  transition: transform 100ms ease-out, background-color 120ms ease;
+}
+.filter-btn:active { transform: scale(0.97); }
+.filter-btn[aria-expanded="true"] { background: var(--accent-wash); color: var(--accent-ink); }
+.filter-btn svg.chev { width: 12px; height: 12px; transition: transform 200ms ease; }
+.filter-btn[aria-expanded="true"] svg.chev { transform: rotate(180deg); }
+.fcount { min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: var(--accent); color: #fff; font-size: 0.6875rem; font-weight: 700; display: inline-grid; place-items: center; }
+.popover {
+  position: absolute; right: 0; top: calc(100% + 8px); z-index: 30; width: min(640px, calc(100vw - var(--side-w) - 40px));
+  background: var(--surface-raised); border-radius: 16px; box-shadow: var(--shadow-pop);
+  display: flex; flex-direction: column; overflow: hidden;
+  transform-origin: top right; opacity: 0; transform: scale(0.96) translateY(-4px); visibility: hidden;
+  transition: opacity 140ms ease, transform 240ms cubic-bezier(0.2, 0.9, 0.3, 1), visibility 0s linear 240ms;
+}
+.popover.open { opacity: 1; transform: none; visibility: visible; transition: opacity 140ms ease, transform 240ms cubic-bezier(0.2, 0.9, 0.3, 1), visibility 0s; }
+.pop-body { display: grid; grid-template-columns: 210px minmax(0, 1fr); height: min(440px, 62vh); }
+.pop-cats { overflow-y: auto; padding: 8px; border-right: 1px solid var(--grid); background: color-mix(in srgb, var(--surface-raised) 60%, var(--page)); }
+.pop-cat {
+  display: grid; grid-template-columns: minmax(0,1fr) auto; align-items: center; gap: 2px 8px; width: 100%; text-align: left;
+  border: 0; background: transparent; border-radius: 9px; padding: 8px 10px; transition: background-color 100ms ease;
+}
+.pop-cat:hover { background: var(--wash); }
+.pop-cat[aria-selected="true"] { background: var(--wash-strong); }
+.pop-cat .l { font-size: 0.875rem; font-weight: 600; }
+.pop-cat .v { grid-column: 1; font-size: 0.75rem; color: var(--ink-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pop-cat .v.set { color: var(--accent-ink); font-weight: 600; }
+.pop-cat svg { grid-row: 1 / span 2; grid-column: 2; width: 12px; height: 12px; color: var(--ink-3); }
+.pop-opts { overflow-y: auto; padding: 8px; }
+.pop-opts h3 { margin: 6px 10px 6px; font-size: 0.75rem; color: var(--ink-3); font-weight: 650; letter-spacing: 0.01em; }
+.opt {
+  display: grid; grid-template-columns: 20px minmax(0,1fr) auto; align-items: center; gap: 8px; width: 100%; text-align: left;
+  border: 0; background: transparent; border-radius: 9px; padding: 8px 10px; font-size: 0.875rem; transition: background-color 100ms ease;
+}
+.opt:hover { background: var(--wash); }
+.opt:active { background: var(--wash-strong); }
+.opt .ck { width: 16px; height: 16px; color: var(--accent); visibility: hidden; }
+.opt[aria-checked="true"] .ck { visibility: visible; }
+.opt[aria-checked="true"] { font-weight: 650; }
+.opt .n { font-size: 0.75rem; color: var(--ink-3); }
+.opt.zero { color: var(--ink-3); }
+.pop-foot { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-top: 1px solid var(--grid); }
+
+/* ---------------------------------------------------------------- main panels */
+main { max-width: 1200px; margin: 0 auto; padding: 20px 28px 64px; }
+.panel { animation: panel-in 180ms ease-out; }
+@keyframes panel-in { from { opacity: 0; } to { opacity: 1; } }
+.grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 16px; }
+.stack { display: grid; gap: 16px; align-content: start; min-width: 0; }
+.card { background: var(--surface); border-radius: var(--radius); box-shadow: 0 0 0 1px var(--ring); padding: 18px 20px 20px; min-width: 0; }
+.card-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+.card-head h2 { margin: 0; font-size: 1rem; line-height: 1.3; font-weight: 650; letter-spacing: -0.005em; }
+.card-head .hint { color: var(--ink-3); font-size: 0.8125rem; }
+.view-toggle { border: 0; background: transparent; color: var(--ink-3); font-size: 0.75rem; font-weight: 600; padding: 2px 6px; border-radius: 6px; }
+.view-toggle:hover { background: var(--wash); color: var(--ink-2); }
+.span-7 { grid-column: span 7; } .span-6 { grid-column: span 6; } .span-5 { grid-column: span 5; }
+@media (max-width: 1100px) { .span-7, .span-6, .span-5 { grid-column: span 12; } }
+.section-title { font-size: 0.8125rem; font-weight: 650; color: var(--ink-3); margin: 28px 2px 10px; letter-spacing: 0.01em; }
+.section-title:first-child { margin-top: 0; }
+
+/* summary */
+.summary { display: grid; grid-template-columns: minmax(0, 1.3fr) repeat(4, minmax(0, 1fr)); gap: 16px; }
+.hero .label, .tile .label { font-size: 0.8125rem; color: var(--ink-2); font-weight: 500; }
+.hero .value { font-size: clamp(2.75rem, 5vw, 3.5rem); line-height: 1.05; letter-spacing: -0.03em; font-weight: 700; margin: 6px 0 4px; }
+.hero .note, .tile .note { font-size: 0.8125rem; color: var(--ink-3); }
+.tile .value { font-size: 1.75rem; line-height: 1.15; letter-spacing: -0.02em; font-weight: 650; margin: 8px 0 2px; }
+.tile .note { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+@media (max-width: 1200px) { .summary { grid-template-columns: repeat(2, minmax(0, 1fr)); } .hero { grid-column: span 2; } }
+
+/* ranked bars */
+.bars { display: grid; gap: 2px; }
+.bar-row {
+  display: grid; grid-template-columns: minmax(7rem, 13rem) minmax(0, 1fr); align-items: center; gap: 12px;
+  border: 0; background: transparent; text-align: left; padding: 5px 6px; margin: 0 -6px; border-radius: 8px; transition: background-color 120ms ease;
+}
+.bar-row:hover { background: var(--wash); }
+.bar-row:active { background: var(--wash-strong); }
+.bar-label { font-size: 0.8125rem; color: var(--ink-2); line-height: 1.25; }
+.bar-row[aria-pressed="true"] .bar-label { color: var(--ink); font-weight: 600; }
+.bar-track { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.bar { height: 14px; border-radius: 0 4px 4px 0; background: var(--accent); flex: none; transition: width 320ms cubic-bezier(0.25, 1, 0.5, 1), background-color 200ms ease; }
+.bars.has-selection .bar-row:not([aria-pressed="true"]) .bar { background: var(--muted-mark); }
+.bar-value { font-size: 0.8125rem; color: var(--ink); font-weight: 600; white-space: nowrap; }
+.bar-value .share { color: var(--ink-3); font-weight: 500; margin-left: 4px; }
+
+/* ranked list */
+.rank { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.rank button {
+  display: grid; grid-template-columns: 5rem minmax(0,1fr) auto; gap: 14px; align-items: center;
+  border: 0; background: transparent; text-align: left; padding: 9px 6px; margin: 0 -6px; border-radius: 8px;
+  width: calc(100% + 12px); transition: background-color 120ms ease;
+}
+.rank button:hover { background: var(--wash); }
+.rank button:active { background: var(--wash-strong); }
+.rank .amt { font-size: 1rem; font-weight: 700; letter-spacing: -0.01em; }
+.rank .t { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: 0.8125rem; line-height: 1.3; font-weight: 550; }
+.rank .e { display: block; font-size: 0.75rem; color: var(--ink-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
+.rank .side { font-size: 0.75rem; color: var(--ink-3); text-align: right; white-space: nowrap; }
+
+.mini-table { width: 100%; border-collapse: collapse; font-size: 0.8125rem; }
+.mini-table th { text-align: left; color: var(--ink-3); font-weight: 600; padding: 6px 8px; border-bottom: 1px solid var(--grid); }
+.mini-table td { padding: 6px 8px; border-bottom: 1px solid var(--grid); }
+.mini-table td.r, .mini-table th.r { text-align: right; }
+
+/* listings */
+.list-head { display: flex; align-items: baseline; gap: 8px 16px; flex-wrap: wrap; margin-bottom: 14px; }
+.list-head .count { font-size: 1.125rem; font-weight: 650; letter-spacing: -0.01em; }
+.list-head .count small { font-size: 0.875rem; font-weight: 500; color: var(--ink-3); margin-left: 6px; letter-spacing: 0; }
+.sort-link { border: 0; background: transparent; font-size: 0.8125rem; color: var(--ink-2); padding: 2px 4px; border-radius: 6px; }
+.sort-link b { color: var(--ink); font-weight: 650; }
+.sort-link:hover { background: var(--wash); }
+.table-card { padding: 0; }
+.notices { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 0.875rem; }
+.notices thead th {
+  position: sticky; top: var(--chrome-h, 64px); z-index: 2; background: var(--surface);
+  text-align: left; font-size: 0.75rem; color: var(--ink-3); font-weight: 600; padding: 10px 12px 8px;
+  border-bottom: 1px solid var(--grid); white-space: nowrap;
+}
+.notices thead tr:first-child th:first-child { border-top-left-radius: var(--radius); }
+.notices thead tr:first-child th:last-child { border-top-right-radius: var(--radius); }
+.notices th.r, .notices td.r { text-align: right; }
+.notices tr.group th { text-align: left; padding: 18px 20px 8px; font-size: 0.8125rem; font-weight: 650; color: var(--ink); border-bottom: 1px solid var(--grid); background: var(--surface); }
+.notices tr.group th span { color: var(--ink-3); font-weight: 500; margin-left: 8px; }
+.notices tr.group.urgent th { color: var(--critical); }
+.notices tbody tr.item { cursor: pointer; transition: background-color 100ms ease; }
+.notices tbody tr.item:hover { background: var(--wash); }
+.notices tbody tr.item:active { background: var(--wash-strong); }
+.notices tbody tr.item.fresh { animation: fresh 2.4s ease-out; }
+@keyframes fresh { from { background: var(--accent-wash); } to { background: transparent; } }
+.notices td { padding: 11px 12px; border-bottom: 1px solid var(--grid); vertical-align: top; }
+.notices td:first-child, .notices thead th:first-child { padding-left: 20px; }
+.notices td:last-child, .notices thead th:last-child { padding-right: 20px; }
+.notices .tt { font-weight: 550; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.notices .te { color: var(--ink-3); font-size: 0.8125rem; margin-top: 2px; }
+.notices .mob { display: none; }
+.notices .cell-2 { color: var(--ink-2); font-size: 0.8125rem; }
+.notices td.closes { white-space: nowrap; }
+.new-tag { display: inline-flex; align-items: center; gap: 4px; font-size: 0.6875rem; font-weight: 700; color: var(--accent-ink); margin-right: 6px; vertical-align: 1px; }
+.new-tag::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+.badge { display: inline-flex; align-items: center; gap: 5px; font-size: 0.75rem; font-weight: 600; color: var(--ink); }
+.badge .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--warning); flex: none; }
+.badge.critical .dot { background: var(--critical); }
+.badge.muted { color: var(--ink-3); font-weight: 500; }
+.table-foot { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; color: var(--ink-3); font-size: 0.8125rem; }
+.empty { padding: 48px 20px; text-align: center; color: var(--ink-3); }
+
+/* tooltip */
+.tip {
+  position: fixed; z-index: 40; pointer-events: none; padding: 8px 10px; border-radius: 10px;
+  background: var(--surface-raised); box-shadow: 0 0 0 1px var(--ring), 0 8px 24px rgba(0,0,0,0.14);
+  font-size: 0.75rem; line-height: 1.35; opacity: 0; transform: translateY(2px);
+  transition: opacity 100ms ease, transform 100ms ease; max-width: 260px;
+}
+.tip.on { opacity: 1; transform: none; }
+.tip .v { font-size: 0.875rem; font-weight: 650; color: var(--ink); }
+.tip .k { color: var(--ink-2); }
+
+/* ---------------------------------------------------------------- detail sheet */
+.scrim { position: fixed; inset: 0; z-index: 50; background: var(--scrim); opacity: 0; pointer-events: none; }
+.scrim.on { pointer-events: auto; }
+.sheet {
+  position: fixed; z-index: 51; top: 10px; right: 10px; bottom: 10px; width: min(480px, calc(100vw - 20px));
+  background: var(--surface-raised); border-radius: 18px; box-shadow: var(--shadow-sheet);
+  display: flex; flex-direction: column; transform: translateX(calc(100% + 24px)); visibility: hidden;
+  will-change: transform; touch-action: pan-y;
+}
+.sheet.on { visibility: visible; }
+.sheet-head { padding: 14px 16px 12px 22px; display: flex; gap: 12px; align-items: flex-start; cursor: grab; touch-action: none; user-select: none; }
+.sheet-head:active { cursor: grabbing; }
+.sheet-head .grow { min-width: 0; padding-top: 8px; }
+.sheet-kicker { font-size: 0.75rem; color: var(--ink-3); font-weight: 600; letter-spacing: 0.01em; }
+.sheet h3 { margin: 4px 0 0; font-size: 1.1875rem; line-height: 1.25; letter-spacing: -0.012em; font-weight: 700; }
+.sheet .entity { margin-top: 6px; color: var(--ink-2); font-size: 0.875rem; }
+.sheet .icon-btn { background: var(--wash-strong); }
+.sheet-body { overflow-y: auto; padding: 4px 22px 22px; overscroll-behavior: contain; }
+.facts { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 1px; background: var(--grid); border-radius: 12px; overflow: hidden; box-shadow: 0 0 0 1px var(--grid); margin: 12px 0 18px; }
+.fact { background: var(--surface-raised); padding: 10px 12px; min-width: 0; }
+.fact .k { font-size: 0.6875rem; color: var(--ink-3); font-weight: 600; letter-spacing: 0.01em; }
+.fact .v { font-size: 0.875rem; margin-top: 2px; overflow-wrap: anywhere; }
+.fact.wide { grid-column: span 2; }
+.fact.big .v { font-size: 1.375rem; font-weight: 700; letter-spacing: -0.015em; }
+.chip-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+.chip { font-size: 0.75rem; font-weight: 600; padding: 3px 9px; border-radius: 999px; background: var(--wash-strong); color: var(--ink-2); }
+.sheet h4 { font-size: 0.8125rem; margin: 18px 0 6px; color: var(--ink-2); font-weight: 650; }
+.sheet p.desc, .sheet p.contact { margin: 0; font-size: 0.875rem; line-height: 1.55; color: var(--ink-2); overflow-wrap: anywhere; }
+.sheet-actions { display: flex; gap: 8px; margin-top: 20px; flex-wrap: wrap; }
+.sheet .fine { margin: 8px 0 0; font-size: 0.75rem; color: var(--ink-3); line-height: 1.45; }
+
+/* ---------------------------------------------------------------- preferences */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: 1ms !important; animation-duration: 1ms !important; animation-iteration-count: 1 !important; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .toolbar { background: var(--page); -webkit-backdrop-filter: none; backdrop-filter: none; }
+}
+@media (prefers-contrast: more) {
+  .toolbar { background: var(--page); border-bottom-color: var(--ink-3); }
+  .card, .scrape { box-shadow: 0 0 0 1px var(--ink-3); }
+}
+
+/* ---------------------------------------------------------------- narrow screens: sidebar becomes a top bar */
+@media (max-width: 900px) {
+  .app { grid-template-columns: minmax(0, 1fr); }
+  .sidebar {
+    position: static; height: auto; padding: 12px 16px 10px; gap: 10px; box-shadow: inset 0 -1px 0 var(--ring);
+    display: grid; grid-template-columns: minmax(0,1fr) auto; align-items: center;
+  }
+  .brand { padding: 0; }
+  .nav { grid-column: 1 / -1; grid-row: 2; display: flex; padding: 3px; border-radius: 11px; background: var(--wash-strong); gap: 0; }
+  .nav-item { flex: 1; justify-content: center; padding: 6px 10px; font-size: 0.875rem; }
+  .nav-item svg { display: none; }
+  .nav-item .count { display: none; }
+  .nav-item[aria-selected="true"] { background: var(--surface-raised); color: var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,0.14); }
+  .side-foot { grid-column: 2; grid-row: 1; margin: 0; display: flex; align-items: center; gap: 4px; }
+  .scrape { background: transparent; box-shadow: none; padding: 0; display: flex; align-items: center; gap: 8px; }
+  .scrape-btn { width: auto; }
+  .scrape .scrape-status, .scrape .progress { display: none; }
+  .side-meta { padding: 0; }
+  .m-status { display: block; grid-column: 1 / -1; font-size: 0.75rem; }
+  .toolbar-inner, main { padding-left: 16px; padding-right: 16px; }
+  /* backdrop-filter would make the toolbar the containing block for the fixed bottom sheet below */
+  .toolbar { -webkit-backdrop-filter: none; backdrop-filter: none; background: var(--page); }
+  .page-title, .toolbar-row > .grow { display: none; }
+  .search { flex: 1; width: auto; }
+  .popover { position: fixed; left: 8px; right: 8px; top: auto; bottom: 8px; width: auto; transform-origin: bottom center; transform: translateY(16px); }
+  .pop-body { grid-template-columns: 42% minmax(0, 1fr); height: min(460px, 64vh); }
+  .notices .hide-m { display: none; }
+  .notices .mob { display: block; color: var(--ink-3); font-size: 0.75rem; margin-top: 4px; }
+  .filter-btn .lbl-long { display: none; }
+}
+@media (min-width: 901px) { .m-status { display: none; } .filter-btn .lbl-short { display: none; } }
+@media (max-width: 640px) {
+  .bar-row { grid-template-columns: minmax(6rem, 8.5rem) minmax(0, 1fr); }
+  .rank button { grid-template-columns: 4.25rem minmax(0,1fr); }
+  .rank .side { display: none; }
+  .summary { gap: 12px; }
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-list" viewBox="0 0 20 20"><path d="M7 5h10M7 10h10M7 15h10" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="3.5" cy="5" r="1.2" fill="currentColor"/><circle cx="3.5" cy="10" r="1.2" fill="currentColor"/><circle cx="3.5" cy="15" r="1.2" fill="currentColor"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 20 20"><path d="M3 17h14M5.5 14V9M10 14V4M14.5 14v-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 20 20"><path d="M16 10a6 6 0 1 1-1.8-4.3M16 3.5v3.7h-3.7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-filter" viewBox="0 0 20 20"><path d="M3 5h14M6 10h8M8.5 15h3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-chev-d" viewBox="0 0 12 12"><path d="M2.5 4.5L6 8l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-chev-r" viewBox="0 0 12 12"><path d="M4.5 2.5L8 6l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-check" viewBox="0 0 16 16"><path d="M3 8.5l3.2 3L13 4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-x" viewBox="0 0 16 16"><path d="M4.5 4.5l7 7M11.5 4.5l-7 7" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
+  <symbol id="i-theme" viewBox="0 0 20 20"><circle cx="10" cy="10" r="6.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M10 3.5a6.5 6.5 0 0 0 0 13z" fill="currentColor"/></symbol>
+</svg>
+
+<div class="app">
+  <!-- ============================================================ SIDEBAR -->
+  <aside class="sidebar" aria-label="Navigation">
+    <div class="brand"><div class="name">Bid Notices</div><div class="src">PhilGEPS open opportunities</div></div>
+    <nav class="nav" role="tablist" aria-orientation="vertical" aria-label="Sections">
+      <button class="nav-item" role="tab" id="tab-listings" aria-controls="panel-listings" aria-selected="true">
+        <svg class="i"><use href="#i-list"/></svg>Listings<span class="count num" id="nav-count"></span></button>
+      <button class="nav-item" role="tab" id="tab-data" aria-controls="panel-data" aria-selected="false" tabindex="-1">
+        <svg class="i"><use href="#i-chart"/></svg>Data</button>
+    </nav>
+    <div class="side-foot">
+      <div class="scrape">
+        <button class="btn primary scrape-btn" id="scrape-btn" type="button"><svg class="i"><use href="#i-refresh"/></svg><span id="scrape-label">Scrape now</span></button>
+        <div class="progress" id="scrape-progress"><span></span></div>
+        <div class="scrape-status" id="scrape-status" aria-live="polite"></div>
+      </div>
+      <div class="side-meta"><button class="icon-btn" id="theme" type="button" aria-label="Switch light or dark appearance"><svg class="i"><use href="#i-theme"/></svg></button></div>
+    </div>
+    <div class="m-status scrape-status" id="m-status" aria-hidden="true"></div>
+  </aside>
+
+  <div class="content">
+    <!-- ============================================================ TOOLBAR -->
+    <header class="toolbar" id="chrome">
+      <div class="toolbar-inner">
+        <div class="toolbar-row">
+          <h1 class="page-title" id="page-title">Listings</h1>
+          <span class="grow"></span>
+          <label class="search">
+            <span class="sr-only">Search listings</span>
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="7" cy="7" r="5"/><path d="M11 11l3.5 3.5"/></svg>
+            <input id="q" type="search" placeholder="Search title, agency, reference no." autocomplete="off">
+          </label>
+          <div class="filter-wrap">
+            <button class="filter-btn" id="filter-btn" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="filter-pop">
+              <svg class="i"><use href="#i-filter"/></svg><span class="lbl-long">Filter &amp; sort</span><span class="lbl-short">Filter</span>
+              <span class="fcount" id="fcount" hidden></span><svg class="chev"><use href="#i-chev-d"/></svg>
+            </button>
+            <div class="popover" id="filter-pop" role="dialog" aria-label="Filter and sort">
+              <div class="pop-body">
+                <div class="pop-cats" id="pop-cats" role="tablist" aria-orientation="vertical"></div>
+                <div class="pop-opts" id="pop-opts"></div>
+              </div>
+              <div class="pop-foot">
+                <button class="link" id="pop-clear" type="button">Clear all</button>
+                <span class="grow"></span>
+                <button class="btn primary" id="pop-done" type="button">Done</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="chips" id="chips"></div>
+      </div>
+    </header>
+
+    <main>
+      <!-- ============================================================ LISTINGS -->
+      <section class="panel" id="panel-listings" role="tabpanel" aria-labelledby="tab-listings">
+        <div class="list-head">
+          <div class="count" id="l-count"></div>
+          <span class="grow"></span>
+          <button class="sort-link" id="sort-link" type="button"></button>
+        </div>
+        <article class="card table-card">
+          <table class="notices" id="notices">
+            <thead><tr>
+              <th style="width:46%">Listing</th>
+              <th class="hide-m">Sector</th>
+              <th class="hide-m">Region</th>
+              <th class="r">Budget</th>
+              <th class="hide-m">Published</th>
+              <th>Closes</th>
+            </tr></thead>
+            <tbody></tbody>
+          </table>
+          <div class="table-foot"><span id="t-count"></span><button class="btn" id="more" type="button">Show 50 more</button></div>
+        </article>
+      </section>
+
+      <!-- ============================================================ DATA -->
+      <section class="panel" id="panel-data" role="tabpanel" aria-labelledby="tab-data" hidden>
+        <h2 class="section-title">At a glance</h2>
+        <div class="summary">
+          <div class="card hero"><div class="label">Total approved budget</div><div class="value" id="k-budget">–</div><div class="note" id="k-budget-note"></div></div>
+          <div class="card tile"><div class="label">Listings</div><div class="value" id="k-count">–</div><div class="note" id="k-count-note"></div></div>
+          <div class="card tile"><div class="label">Median budget</div><div class="value" id="k-median">–</div><div class="note" id="k-median-note"></div></div>
+          <div class="card tile"><div class="label">Up for bid this week</div><div class="value" id="k-week">–</div><div class="note" id="k-week-note"></div></div>
+          <div class="card tile"><div class="label">Largest listing</div><div class="value" id="k-max">–</div><div class="note" id="k-max-note"></div></div>
+        </div>
+
+        <h2 class="section-title">Where the money goes</h2>
+        <div class="grid">
+          <article class="card span-6" data-view="chart" id="card-sector">
+            <div class="card-head"><h2>Budget by sector</h2><span class="hint">Click to filter</span><span class="grow"></span><button class="view-toggle" type="button">Table</button></div>
+            <div class="chart-area"></div>
+          </article>
+          <article class="card span-6" data-view="chart" id="card-region">
+            <div class="card-head"><h2>Budget by region</h2><span class="hint" id="h-region">Where the work is delivered</span><span class="grow"></span><button class="view-toggle" type="button">Table</button></div>
+            <div class="chart-area"></div>
+          </article>
+        </div>
+
+        <h2 class="section-title">Who and how big</h2>
+        <div class="grid">
+          <article class="card span-7" id="card-largest">
+            <div class="card-head"><h2>Largest listings</h2><span class="hint">By approved budget</span></div>
+            <ul class="rank" id="largest"></ul>
+          </article>
+          <div class="span-5 stack">
+            <article class="card" data-view="chart" id="card-bracket">
+              <div class="card-head"><h2>Contract size</h2><span class="hint">Listings per budget range</span><span class="grow"></span><button class="view-toggle" type="button">Table</button></div>
+              <div class="chart-area"></div>
+            </article>
+            <article class="card" data-view="chart" id="card-agency">
+              <div class="card-head"><h2>Top spending agencies</h2><span class="hint">Click to search</span><span class="grow"></span><button class="view-toggle" type="button">Table</button></div>
+              <div class="chart-area"></div>
+            </article>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<div class="tip" id="tip" role="status" aria-live="polite"></div>
+<div class="scrim" id="scrim"></div>
+<aside class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sh-title">
+  <div class="sheet-head" id="sheet-head">
+    <div class="grow">
+      <div class="sheet-kicker" id="sh-kicker"></div>
+      <h3 id="sh-title"></h3>
+      <div class="entity" id="sh-entity"></div>
+    </div>
+    <button class="icon-btn" id="sh-close" type="button" aria-label="Close details"><svg class="i"><use href="#i-x"/></svg></button>
+  </div>
+  <div class="sheet-body" id="sh-body"></div>
+</aside>
+
+<script type="application/json" id="data">__DATA__</script>
+<script>
+(() => {
+"use strict";
+const SERVER = window.__PHILGEPS_SERVER__ === true && location.protocol.startsWith("http");
+let DATA = JSON.parse(document.getElementById("data").textContent);
+let N = [];
+let NOW = new Date();
+const DAY = 86400000;
+const freshIds = new Set();   // listings found by scrapes in this session
+
+// ------------------------------------------------------------- parsing & formatting
+const toDate = (iso) => {
+  if (!iso) return null;
+  const [d, t] = iso.split("T");
+  const [y, m, dd] = d.split("-").map(Number);
+  const [hh, mm] = (t || "00:00").split(":").map(Number);
+  return new Date(y, m - 1, dd, hh, mm);
+};
+function prep(n) { n._p = toDate(n.p); n._cl = toDate(n.cl); n._q = (n.t + " " + n.e + " " + n.id + " " + n.sol + " " + n.c).toLowerCase(); return n; }
+function ingest(payload) { DATA = payload; N = payload.notices.map(prep); NOW = new Date(); }
+ingest(DATA);
+
+const fmtInt = new Intl.NumberFormat("en-PH");
+const peso = (v) => v == null ? "—" : "₱" + fmtInt.format(Math.round(v));
+function pesoCompact(v) {
+  if (v == null) return "—";
+  const a = Math.abs(v);
+  if (a >= 1e9) return "₱" + (v / 1e9).toFixed(a >= 1e10 ? 1 : 2).replace(/\.?0+$/, "") + "B";
+  if (a >= 1e6) return "₱" + (v / 1e6).toFixed(a >= 1e8 ? 0 : 1).replace(/\.0$/, "") + "M";
+  if (a >= 1e3) return "₱" + Math.round(v / 1e3) + "K";
+  return "₱" + Math.round(v);
+}
+const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const WEEKDAYS = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+const fmtDay = (d) => d ? MONTHS[d.getMonth()] + " " + d.getDate() + (d.getFullYear() !== NOW.getFullYear() ? ", " + d.getFullYear() : "") : "—";
+const fmtTime = (d) => { let h = d.getHours(); const m = d.getMinutes(); const ap = h >= 12 ? "PM" : "AM"; h = h % 12 || 12; return h + ":" + String(m).padStart(2, "0") + " " + ap; };
+const startOfDay = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+const dayDiff = (d) => Math.round((startOfDay(d) - startOfDay(NOW)) / DAY);
+function ago(d) {
+  const s = (Date.now() - d) / 1000;
+  if (s < 60) return "just now";
+  if (s < 3600) return Math.round(s / 60) + " min ago";
+  if (s < 86400) return Math.round(s / 3600) + " h ago";
+  return fmtDay(d) + ", " + fmtTime(d);
+}
+function relClose(d) {
+  if (!d) return { text: "—", level: "none" };
+  const ms = d - NOW;
+  if (ms < 0) return { text: "Closed", level: "closed" };
+  const h = ms / 3600000;
+  if (h < 24) return { text: h < 1 ? "In " + Math.max(1, Math.round(h * 60)) + " min" : "In " + Math.round(h) + " h", level: "critical" };
+  const days = Math.round(h / 24);
+  return { text: "In " + days + (days === 1 ? " day" : " days"), level: days <= 3 ? "warning" : "none" };
+}
+const pct = (a, b) => b ? Math.round((a / b) * 100) : 0;
+const titleCase = (s) => s.toLowerCase().replace(/\b([a-z])/g, (m) => m.toUpperCase()).replace(/\b(Of|And|The|De|Del|For)\b/g, (m) => m.toLowerCase());
+const icon = (id, cls) => { const s = document.createElementNS("http://www.w3.org/2000/svg", "svg"); s.setAttribute("class", cls || "i"); s.setAttribute("aria-hidden", "true"); const u = document.createElementNS("http://www.w3.org/2000/svg", "use"); u.setAttribute("href", "#" + id); s.append(u); return s; };
+function el(tag, attrs, ...kids) {
+  const e = document.createElement(tag);
+  if (attrs) for (const [k, v] of Object.entries(attrs)) {
+    if (v == null || v === false) continue;
+    if (k === "class") e.className = v; else if (k === "text") e.textContent = v;
+    else if (k === "style") e.style.cssText = v; else if (k.startsWith("on")) e.addEventListener(k.slice(2), v);
+    else e.setAttribute(k, v === true ? "" : v);
+  }
+  for (const k of kids.flat()) if (k != null && k !== false) e.append(k instanceof Node ? k : document.createTextNode(String(k)));
+  return e;
+}
+const put = (node, ...kids) => node.replaceChildren(...kids.flat().filter((k) => k != null && k !== false));
+
+// ------------------------------------------------------------- filters model (one dropdown, eBay-style)
+const DEFAULTS = { sort: "p", published: "all", closing: "any", sector: "", region: "", cls: "", bracket: "" };
+const state = { tab: "listings", q: "", ...DEFAULTS, limit: 50 };
+const FILTERS = [
+  { key: "sort", label: "Sort by", listingsOnly: true, options: () => [["p", "Newest first"], ["cl", "Closing soonest"], ["b", "Largest budget"], ["bs", "Smallest budget"]] },
+  { key: "closing", label: "Closing", options: () => [["any", "Any time"], ["24h", "Within 24 hours"], ["week", "Within 7 days"], ["open", "Still open"], ["closed", "Already closed"]] },
+  { key: "published", label: "Published", options: () => [["all", "Any time"], ["today", "Today"], ["7", "Last 7 days"], ["30", "Last 30 days"]] },
+  { key: "sector", label: "Sector", options: () => [["", "All sectors"], ...DATA.sectors.map((v) => [v, v])] },
+  { key: "region", label: "Region", options: () => [["", "All regions"], ...DATA.regions.map((v) => [v, v === "Unknown" ? "Not stated" : v])] },
+  { key: "cls", label: "Type", options: () => [["", "All types"], ...DATA.classifications.map((v) => [v, v])] },
+  { key: "bracket", label: "Budget size", options: () => [["", "Any budget"], ...DATA.budgetBrackets.map((v) => [v, v])] },
+];
+const optLabel = (f, v) => (f.options().find((o) => o[0] === v) || [v, v])[1];
+
+function passes(n, st, skip) {
+  if (st.q && !n._q.includes(st.q)) return false;
+  if (skip !== "published" && st.published !== "all") {
+    if (!n._p) return false;
+    if (st.published === "today" ? dayDiff(n._p) !== 0 : NOW - n._p > Number(st.published) * DAY) return false;
+  }
+  if (skip !== "closing" && st.closing !== "any") {
+    const c = n._cl;
+    if (st.closing === "open" && !(c && c >= NOW)) return false;
+    if (st.closing === "24h" && !(c && c >= NOW && c - NOW <= DAY)) return false;
+    if (st.closing === "week" && !(c && c >= NOW && c - NOW <= 7 * DAY)) return false;
+    if (st.closing === "closed" && !(c && c < NOW)) return false;
+  }
+  if (skip !== "sector" && st.sector && n.s !== st.sector) return false;
+  if (skip !== "region" && st.region && n.r !== st.region) return false;
+  if (skip !== "cls" && st.cls && n.k !== st.cls) return false;
+  if (skip !== "bracket" && st.bracket && n.bb !== st.bracket) return false;
+  return true;
+}
+const select = (skip) => N.filter((n) => passes(n, state, skip));
+const activeFilters = () => FILTERS.filter((f) => f.key !== "sort" && state[f.key] !== DEFAULTS[f.key]);
+
+function group(list, key) {
+  const m = new Map();
+  for (const n of list) { const k = n[key]; let g = m.get(k); if (!g) m.set(k, g = { key: k, n: 0, sum: 0 }); g.n++; g.sum += n.b || 0; }
+  return [...m.values()];
+}
+
+// ------------------------------------------------------------- popover
+const pop = document.getElementById("filter-pop"), fbtn = document.getElementById("filter-btn");
+let popCat = "sort";
+function visibleFilters() { return FILTERS.filter((f) => !(f.listingsOnly && state.tab !== "listings")); }
+function renderPopover() {
+  const fs = visibleFilters();
+  if (!fs.find((f) => f.key === popCat)) popCat = fs[0].key;
+  put(document.getElementById("pop-cats"), fs.map((f) => {
+    const set = state[f.key] !== DEFAULTS[f.key] && f.key !== "sort";
+    return el("button", { class: "pop-cat", type: "button", role: "tab", "aria-selected": String(f.key === popCat),
+      onclick: () => { popCat = f.key; renderPopover(); } },
+      el("span", { class: "l", text: f.label }),
+      el("span", { class: "v" + (set ? " set" : ""), text: optLabel(f, state[f.key]) }),
+      icon("i-chev-r"));
+  }));
+  const f = FILTERS.find((x) => x.key === popCat);
+  const base = N.filter((n) => passes(n, state, f.key));   // counts reflect every other filter
+  const opts = f.options().map(([v, label]) => {
+    let count = null;
+    if (f.key !== "sort") count = v === DEFAULTS[f.key] ? base.length : base.filter((n) => passes(n, { ...state, [f.key]: v }, null)).length;
+    const on = state[f.key] === v;
+    return el("button", { class: "opt" + (count === 0 && !on ? " zero" : ""), type: "button", role: "radio", "aria-checked": String(on),
+      onclick: () => { setFilter(f.key, v); renderPopover(); } },
+      icon("i-check", "ck"), el("span", { text: label }), count != null && el("span", { class: "n num", text: fmtInt.format(count) }));
+  });
+  put(document.getElementById("pop-opts"), el("div", { role: "radiogroup", "aria-label": f.label }, el("h3", { text: f.label }), opts));
+  const n = select().length;
+  document.getElementById("pop-done").textContent = state.tab === "listings" ? "Show " + fmtInt.format(n) + (n === 1 ? " listing" : " listings") : "Done";
+}
+function openPopover(cat) {
+  if (cat) popCat = cat;
+  renderPopover();
+  pop.classList.add("open"); fbtn.setAttribute("aria-expanded", "true");
+  requestAnimationFrame(() => { const b = pop.querySelector('.pop-cat[aria-selected="true"]'); b && b.focus({ preventScroll: true }); });
+}
+function closePopover(returnFocus = true) {
+  if (!pop.classList.contains("open")) return;
+  pop.classList.remove("open"); fbtn.setAttribute("aria-expanded", "false");
+  if (returnFocus) fbtn.focus({ preventScroll: true });
+}
+fbtn.addEventListener("click", () => pop.classList.contains("open") ? closePopover() : openPopover());
+document.getElementById("pop-done").addEventListener("click", () => closePopover());
+document.getElementById("pop-clear").addEventListener("click", () => { clearFilters(); renderPopover(); });
+document.addEventListener("pointerdown", (e) => { if (pop.classList.contains("open") && !e.target.closest(".filter-wrap") && !e.target.closest("#sort-link")) closePopover(false); });
+pop.addEventListener("keydown", (e) => {
+  if (!["ArrowDown", "ArrowUp"].includes(e.key)) return;
+  const list = [...e.target.parentElement.querySelectorAll(":scope > button")]; const i = list.indexOf(e.target);
+  if (i < 0) return; e.preventDefault();
+  const nxt = list[Math.max(0, Math.min(list.length - 1, i + (e.key === "ArrowDown" ? 1 : -1)))];
+  nxt.focus(); if (nxt.classList.contains("pop-cat")) nxt.click();
+});
+
+function renderChips() {
+  const chips = activeFilters().map((f) => el("button", { class: "chip-x", type: "button", "aria-label": "Remove filter " + f.label + ": " + optLabel(f, state[f.key]),
+    onclick: () => setFilter(f.key, DEFAULTS[f.key]) },
+    (f.key === "sector" || f.key === "region" || f.key === "cls") ? optLabel(f, state[f.key]) : f.label + ": " + optLabel(f, state[f.key]), icon("i-x")));
+  if (chips.length > 1) chips.push(el("button", { class: "link", type: "button", onclick: clearFilters, text: "Clear all" }));
+  put(document.getElementById("chips"), chips);
+  const c = activeFilters().length, fc = document.getElementById("fcount");
+  fc.hidden = !c; fc.textContent = c;
+  fbtn.setAttribute("aria-label", "Filter and sort" + (c ? ", " + c + " filters active" : ""));
+}
+
+// ------------------------------------------------------------- tooltip & chart pieces
+const tip = document.getElementById("tip");
+function showTip(evt, value, label, extra) {
+  put(tip, el("div", { class: "v", text: value }), el("div", { class: "k", text: label }), extra && el("div", { class: "k", text: extra }));
+  const r = evt.currentTarget.getBoundingClientRect();
+  const x = evt.clientX ?? (r.left + r.width / 2), y = evt.clientY ?? r.top;
+  tip.classList.add("on");
+  tip.style.left = Math.min(window.innerWidth - tip.offsetWidth - 8, Math.max(8, x - tip.offsetWidth / 2)) + "px";
+  tip.style.top = Math.max(8, y - tip.offsetHeight - 14) + "px";
+}
+const hideTip = () => tip.classList.remove("on");
+function rankedBars(container, rows, { selected, onPick, fmt, tipExtra }) {
+  const total = rows.reduce((a, g) => a + g.value, 0);
+  const max = Math.max(1, ...rows.map((g) => g.value));
+  const wrap = el("div", { class: "bars" + (selected ? " has-selection" : ""), role: "list" });
+  for (const g of rows) {
+    const share = pct(g.value, total), label = g.label || g.key;
+    wrap.append(el("button", {
+      class: "bar-row", type: "button", role: "listitem", "aria-pressed": String(selected === g.key),
+      "aria-label": label + ": " + fmt(g.value) + " (" + share + "%)",
+      onclick: () => onPick(selected === g.key ? "" : g.key),
+      onpointermove: (e) => showTip(e, fmt(g.value), label, tipExtra(g)), onpointerleave: hideTip,
+    },
+      el("span", { class: "bar-label", text: label }),
+      el("span", { class: "bar-track" },
+        el("span", { class: "bar", style: "width:" + (g.value ? "max(2px, calc((100% - 6.5rem) * " + (g.value / max).toFixed(4) + "))" : "0") }),
+        el("span", { class: "bar-value num" }, fmt(g.value), el("span", { class: "share", text: share + "%" })))));
+  }
+  if (!rows.length) wrap.append(el("div", { class: "empty", text: "No listings match these filters." }));
+  put(container, wrap);
+}
+function miniTable(container, headers, rows) {
+  put(container, el("table", { class: "mini-table" },
+    el("thead", null, el("tr", null, headers.map((h, i) => el("th", { class: i ? "r" : "", text: h })))),
+    el("tbody", null, rows.map((r) => el("tr", null, r.map((c, i) => el("td", { class: i ? "r num" : "", text: c })))))));
+}
+function setupToggle(card, render) {
+  const btn = card.querySelector(".view-toggle");
+  btn.addEventListener("click", () => {
+    card.dataset.view = card.dataset.view === "chart" ? "table" : "chart";
+    btn.textContent = card.dataset.view === "chart" ? "Table" : "Chart";
+    render();
+  });
+}
+const budgetTable = (area, title, groups) => {
+  const total = groups.reduce((a, g) => a + g.sum, 0);
+  miniTable(area, [title, "Total budget", "Share", "Listings"], groups.map((g) => [g.label || g.key, peso(g.sum), pct(g.sum, total) + "%", fmtInt.format(g.n)]));
+};
+
+// ============================================================= LISTINGS TAB
+const SORTS = {
+  p:  (a, b) => (b._p || 0) - (a._p || 0) || Number(b.id) - Number(a.id),
+  cl: (a, b) => closeKey(a) - closeKey(b) || (b.b || 0) - (a.b || 0),
+  b:  (a, b) => (b.b ?? -1) - (a.b ?? -1),
+  bs: (a, b) => (a.b ?? Infinity) - (b.b ?? Infinity),
+};
+// Open listings by deadline first; closed ones after (most recently closed first); no date last.
+function closeKey(n) {
+  if (!n._cl) return 4e15;
+  return n._cl >= NOW ? +n._cl : 3e15 - +n._cl;
+}
+function groupOf(n) {
+  if (state.sort === "p") {
+    if (!n._p) return { label: "Date not stated" };
+    const d = dayDiff(n._p);
+    return { label: d === 0 ? "Today" : d === -1 ? "Yesterday" : WEEKDAYS[n._p.getDay()] + ", " + fmtDay(n._p) };
+  }
+  if (state.sort === "cl") {
+    if (!n._cl) return { label: "No closing date" };
+    if (n._cl < NOW) return { label: "Already closed" };
+    if (n._cl - NOW <= DAY) return { label: "Closing within 24 hours", urgent: true };
+    const d = dayDiff(n._cl);
+    return { label: d === 1 ? "Closes tomorrow" : "Closes " + WEEKDAYS[n._cl.getDay()] + ", " + fmtDay(n._cl) };
+  }
+  return null; // budget sorts are a single ranked list
+}
+
+function renderListings() {
+  const list = select();
+  const rows = list.slice().sort(SORTS[state.sort]);
+  const soon = list.filter((n) => n._cl && n._cl >= NOW && n._cl - NOW <= DAY).length;
+  put(document.getElementById("l-count"), fmtInt.format(rows.length) + (rows.length === 1 ? " listing" : " listings"),
+      el("small", { text: soon ? fmtInt.format(soon) + " close within 24 hours" : "" }));
+  put(document.getElementById("sort-link"), "Sorted by ", el("b", { text: optLabel(FILTERS[0], state.sort) }), " ▾");
+  document.getElementById("nav-count").textContent = fmtInt.format(rows.length);
+
+  const counts = new Map();
+  for (const n of rows) { const g = groupOf(n); if (g) counts.set(g.label, (counts.get(g.label) || 0) + 1); }
+  const shown = rows.slice(0, state.limit), out = [];
+  let last = null;
+  for (const n of shown) {
+    const g = groupOf(n);
+    if (g && g.label !== last) {
+      const c = counts.get(g.label);
+      out.push(el("tr", { class: "group" + (g.urgent ? " urgent" : "") }, el("th", { colspan: "6", scope: "colgroup" }, g.label, el("span", { text: fmtInt.format(c) + (c === 1 ? " listing" : " listings") }))));
+      last = g.label;
+    }
+    const rc = relClose(n._cl);
+    const badge = el("span", { class: "badge" + (rc.level === "critical" ? " critical" : "") + (rc.level === "closed" || rc.level === "none" ? " muted" : "") },
+      (rc.level === "warning" || rc.level === "critical") && el("span", { class: "dot", "aria-hidden": "true" }), rc.text);
+    out.push(el("tr", { class: "item" + (n._fresh ? " fresh" : ""), tabindex: "0", "aria-label": (freshIds.has(n.id) ? "New: " : "") + n.t,
+      onclick: (e) => openSheet(n, e.currentTarget),
+      onkeydown: (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openSheet(n, e.currentTarget); } } },
+      el("td", null, el("div", { class: "tt" }, freshIds.has(n.id) && el("span", { class: "new-tag", text: "New" }), n.t),
+         el("div", { class: "te", text: n.e }), el("div", { class: "mob", text: n.s + " · " + (n.r === "Unknown" ? "Region not stated" : n.r) })),
+      el("td", { class: "hide-m cell-2", text: n.s }),
+      el("td", { class: "hide-m cell-2", text: n.r === "Unknown" ? "Not stated" : n.r }),
+      el("td", { class: "r num", text: pesoCompact(n.b), title: peso(n.b) }),
+      el("td", { class: "hide-m cell-2 num", text: fmtDay(n._p) }),
+      el("td", { class: "closes" }, badge, el("div", { class: "te num", text: n._cl ? fmtDay(n._cl) : "" }))));
+    n._fresh = false;
+  }
+  const tb = document.querySelector("#notices tbody");
+  if (!out.length) put(tb, el("tr", null, el("td", { colspan: "6", class: "empty", text: "No listings match these filters." })));
+  else put(tb, out);
+  document.getElementById("t-count").textContent = "Showing " + fmtInt.format(shown.length) + " of " + fmtInt.format(rows.length);
+  document.getElementById("more").style.visibility = rows.length > state.limit ? "visible" : "hidden";
+}
+document.getElementById("more").addEventListener("click", () => { state.limit += 50; renderListings(); });
+document.getElementById("sort-link").addEventListener("click", () => openPopover("sort"));
+
+// ============================================================= DATA TAB
+function renderSummary(list) {
+  const total = list.reduce((a, n) => a + (n.b || 0), 0);
+  document.getElementById("k-budget").textContent = pesoCompact(total);
+  document.getElementById("k-budget-note").textContent = "Across " + fmtInt.format(list.length) + " listings";
+  document.getElementById("k-count").textContent = fmtInt.format(list.length);
+  document.getElementById("k-count-note").textContent = list.length === N.length ? "All scraped" : "of " + fmtInt.format(N.length) + " scraped";
+  const bs = list.map((n) => n.b).filter((v) => v != null).sort((a, b) => a - b);
+  const med = bs.length ? (bs.length % 2 ? bs[(bs.length - 1) / 2] : (bs[bs.length / 2 - 1] + bs[bs.length / 2]) / 2) : null;
+  document.getElementById("k-median").textContent = pesoCompact(med);
+  document.getElementById("k-median-note").textContent = bs.length ? "Half are below this" : "";
+  const week = list.filter((n) => n._cl && n._cl >= NOW && n._cl - NOW <= 7 * DAY);
+  document.getElementById("k-week").textContent = pesoCompact(week.reduce((a, n) => a + (n.b || 0), 0));
+  document.getElementById("k-week-note").textContent = fmtInt.format(week.length) + " listings close in 7 days";
+  const top = list.reduce((m, n) => (n.b != null && (!m || n.b > m.b) ? n : m), null);
+  document.getElementById("k-max").textContent = top ? pesoCompact(top.b) : "—";
+  document.getElementById("k-max-note").textContent = top ? pct(top.b, total) + "% of the total · " + titleCase(top.e) : "";
+}
+function renderSector() {
+  const card = document.getElementById("card-sector"), area = card.querySelector(".chart-area");
+  const groups = group(select("sector"), "s").map((g) => ({ ...g, value: g.sum })).sort((a, b) => b.sum - a.sum);
+  if (card.dataset.view === "table") return budgetTable(area, "Sector", groups);
+  rankedBars(area, groups, { selected: state.sector, fmt: pesoCompact, onPick: (k) => setFilter("sector", k), tipExtra: (g) => fmtInt.format(g.n) + " listings" });
+}
+function renderRegion() {
+  const card = document.getElementById("card-region"), area = card.querySelector(".chart-area");
+  const groups = group(select("region"), "r")
+    .map((g) => ({ ...g, value: g.sum, label: g.key === "Unknown" ? "Not stated" : g.key }))
+    .sort((a, b) => (a.key === "Unknown") - (b.key === "Unknown") || b.sum - a.sum);
+  const unk = groups.find((g) => g.key === "Unknown"), total = groups.reduce((a, g) => a + g.sum, 0);
+  document.getElementById("h-region").textContent = unk && unk.sum ? pct(unk.sum, total) + "% has no stated location (shown last)" : "Where the work is delivered";
+  if (card.dataset.view === "table") return budgetTable(area, "Region", groups);
+  rankedBars(area, groups, { selected: state.region, fmt: pesoCompact, onPick: (k) => setFilter("region", k), tipExtra: (g) => fmtInt.format(g.n) + " listings" });
+}
+function renderBracket() {
+  const card = document.getElementById("card-bracket"), area = card.querySelector(".chart-area");
+  const gm = new Map(group(select("bracket"), "bb").map((g) => [g.key, g]));
+  const groups = DATA.budgetBrackets.map((k) => gm.get(k) || { key: k, n: 0, sum: 0 }).filter((g) => g.n || g.key !== "Not stated").map((g) => ({ ...g, value: g.n }));
+  if (card.dataset.view === "table") return miniTable(area, ["Budget range", "Listings", "Total budget"], groups.map((g) => [g.key, fmtInt.format(g.n), peso(g.sum)]));
+  rankedBars(area, groups, { selected: state.bracket, fmt: (v) => fmtInt.format(v), onPick: (k) => setFilter("bracket", k), tipExtra: (g) => pesoCompact(g.sum) + " in total" });
+}
+function renderAgency() {
+  const card = document.getElementById("card-agency"), area = card.querySelector(".chart-area");
+  const groups = group(select(), "e").sort((a, b) => b.sum - a.sum).slice(0, 8).map((g) => ({ ...g, value: g.sum, label: titleCase(g.key) }));
+  if (card.dataset.view === "table") return budgetTable(area, "Agency", groups);
+  rankedBars(area, groups, { selected: "", fmt: pesoCompact, tipExtra: (g) => fmtInt.format(g.n) + " listings", onPick: (k) => setSearch(k) });
+}
+function renderLargest(list) {
+  const top = list.filter((n) => n.b != null).sort((a, b) => b.b - a.b).slice(0, 8);
+  const ul = document.getElementById("largest");
+  if (!top.length) return put(ul, el("li", { class: "empty", text: "No listings match these filters." }));
+  put(ul, top.map((n) => el("li", null, el("button", { type: "button", onclick: (e) => openSheet(n, e.currentTarget) },
+    el("span", { class: "amt num", text: pesoCompact(n.b) }),
+    el("span", { style: "min-width:0" }, el("span", { class: "t", text: n.t }), el("span", { class: "e", text: titleCase(n.e) + " · " + n.s })),
+    el("span", { class: "side" }, relClose(n._cl).text)))));
+}
+function renderData() {
+  const list = select();
+  renderSummary(list); renderSector(); renderRegion(); renderLargest(list); renderBracket(); renderAgency();
+  document.getElementById("nav-count").textContent = fmtInt.format(list.length);
+}
+[["card-sector", renderSector], ["card-region", renderRegion], ["card-bracket", renderBracket], ["card-agency", renderAgency]]
+  .forEach(([id, fn]) => setupToggle(document.getElementById(id), fn));
+
+// ============================================================= state changes, search, tabs
+const qInput = document.getElementById("q");
+let qFrame = 0;
+qInput.addEventListener("input", () => { cancelAnimationFrame(qFrame); qFrame = requestAnimationFrame(() => { state.q = qInput.value.trim().toLowerCase(); state.limit = 50; render(); }); });
+function setSearch(text) { qInput.value = text; state.q = text.trim().toLowerCase(); state.limit = 50; render(); }
+function setFilter(key, value) { state[key] = value; state.limit = 50; render(); }
+function clearFilters() { for (const f of FILTERS) if (f.key !== "sort") state[f.key] = DEFAULTS[f.key]; state.limit = 50; render(); }
+
+const TABS = { listings: document.getElementById("tab-listings"), data: document.getElementById("tab-data") };
+const PANELS = { listings: document.getElementById("panel-listings"), data: document.getElementById("panel-data") };
+function showTab(name, { focus = false, push = true } = {}) {
+  if (!TABS[name]) name = "listings";
+  const changed = state.tab !== name;
+  state.tab = name;
+  for (const k in TABS) {
+    const on = k === name;
+    TABS[k].setAttribute("aria-selected", String(on)); TABS[k].tabIndex = on ? 0 : -1;
+    PANELS[k].hidden = !on;
+  }
+  document.getElementById("page-title").textContent = name === "listings" ? "Listings" : "Data";
+  document.title = (name === "listings" ? "Listings" : "Data") + " · PhilGEPS Bid Notices";
+  if (focus) TABS[name].focus();
+  if (push && changed) history.pushState(null, "", name === "listings" ? location.pathname + location.search : "#" + name);
+  if (changed) { window.scrollTo({ top: 0 }); closePopover(false); }
+  render();
+}
+for (const [name, btn] of Object.entries(TABS)) {
+  btn.addEventListener("click", () => showTab(name));
+  btn.addEventListener("keydown", (e) => {
+    if (["ArrowDown", "ArrowUp", "ArrowRight", "ArrowLeft"].includes(e.key)) { e.preventDefault(); showTab(name === "listings" ? "data" : "listings", { focus: true }); }
+  });
+}
+addEventListener("popstate", () => showTab(location.hash === "#data" ? "data" : "listings", { push: false }));
+
+function render() {
+  renderChips();
+  if (state.tab === "listings") renderListings(); else renderData();
+  if (pop.classList.contains("open")) renderPopover();
+}
+
+// ------------------------------------------------------------- chrome: scroll edge, theme
+const chrome = document.getElementById("chrome");
+new ResizeObserver(() => document.documentElement.style.setProperty("--chrome-h", chrome.offsetHeight + "px")).observe(chrome);
+addEventListener("scroll", () => chrome.classList.toggle("scrolled", scrollY > 4), { passive: true });
+const store = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
+const savedTheme = store.get("philgeps-theme");
+if (savedTheme) document.documentElement.dataset.theme = savedTheme;
+document.getElementById("theme").addEventListener("click", () => {
+  const cur = document.documentElement.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  const next = cur === "dark" ? "light" : "dark";
+  document.documentElement.dataset.theme = next; store.set("philgeps-theme", next);
+});
+
+// ============================================================= scrape button (live updates via the local server)
+const sBtn = document.getElementById("scrape-btn"), sLabel = document.getElementById("scrape-label");
+const sStatus = document.getElementById("scrape-status"), mStatus = document.getElementById("m-status");
+const sProg = document.getElementById("scrape-progress"), sBar = sProg.querySelector("span");
+let es = null, cooldownTimer = 0, runNew = 0, liveFrame = 0, lastResult = null;
+
+function status(...kids) {
+  const flat = kids.flat(Infinity).filter((k) => k != null && k !== false);
+  put(sStatus, flat); put(mStatus, flat.map((k) => k instanceof Node ? k.cloneNode(true) : k));
+}
+function friendlyError(msg) {
+  msg = msg || "";
+  if (/TOO_MANY_REDIRECTS|ErrorPage|giving up/i.test(msg)) return "PhilGEPS isn't responding right now (its server keeps sending us to its error page). Try again later.";
+  if (/Timeout|ERR_TIMED_OUT|ERR_CONNECTION|ERR_NAME/i.test(msg)) return "Couldn't reach PhilGEPS. Check your connection, then try again later.";
+  if (/Executable doesn't exist|playwright install/i.test(msg)) return "The scraping browser isn't installed. Run: python -m playwright install chromium";
+  return msg.split("\n")[0].slice(0, 160);
+}
+function dotted(color, ...kids) { return el("span", { class: "st" }, el("span", { class: "dot", style: "background:" + color, "aria-hidden": "true" }), ...kids); }
+function progress(mode, frac) {
+  sProg.classList.toggle("on", mode !== "off");
+  sProg.classList.toggle("indeterminate", mode === "indeterminate");
+  sBar.style.width = mode === "determinate" ? Math.round(frac * 100) + "%" : "";
+}
+function setRunning(on) {
+  sBtn.classList.toggle("running", on); sBtn.disabled = on;
+  sLabel.textContent = on ? "Scraping…" : "Scrape now";
+}
+function lastScrapedText(iso) { return iso ? "Last scraped " + ago(new Date(iso)) : "Not scraped yet"; }
+
+function idle(st) {
+  setRunning(false); progress("off");
+  clearInterval(cooldownTimer);
+  const last = (st && st.lastFinishedAt) || DATA.lastScrape;
+  let wait = st ? st.nextAllowedIn : 0;
+  const paint = () => {
+    const lines = [];
+    if (lastResult) lines.push(lastResult(), el("br"));
+    lines.push(lastScrapedText(last));
+    if (wait > 0) {
+      sBtn.disabled = true; sLabel.textContent = "Scrape now";
+      lines.push(el("br"), "Next scrape available in " + Math.max(1, Math.ceil(wait / 60)) + " min");
+    } else { sBtn.disabled = false; clearInterval(cooldownTimer); }
+    status(lines);
+  };
+  paint();
+  if (wait > 0) cooldownTimer = setInterval(() => { wait -= 30; paint(); }, 30000);
+}
+
+function onEvent(ev) {
+  switch (ev.type) {
+    case "start": runNew = 0; lastResult = null; setRunning(true); progress("indeterminate"); status("Opening PhilGEPS…"); break;
+    case "listing":
+      progress("indeterminate");
+      status("Checking listings · page " + ev.page, el("br"), el("b", { text: fmtInt.format(ev.new) + " new" }), " so far");
+      break;
+    case "new": {
+      const n = prep(ev.notice);
+      if (!N.some((x) => x.id === n.id)) { n._fresh = true; N.push(n); }
+      freshIds.add(n.id); runNew++;
+      cancelAnimationFrame(liveFrame); liveFrame = requestAnimationFrame(render);  // live: the row appears now
+      break;
+    }
+    case "details":
+      progress("determinate", ev.total ? ev.done / ev.total : 1);
+      status("Fetching details · " + fmtInt.format(ev.done) + " of " + fmtInt.format(ev.total));
+      break;
+    case "retry": status(dotted("var(--warning)", "PhilGEPS is busy"), el("br"), "Retrying in " + ev.wait + " s"); break;
+    case "error":
+      lastResult = () => el("span", null, dotted("var(--critical)", el("b", { text: "Scrape stopped" })), el("br"), friendlyError(ev.message));
+      status(lastResult());
+      break;
+    case "done":
+      lastResult = () => dotted("var(--good)", el("b", { text: ev.new ? fmtInt.format(ev.new) + " new listing" + (ev.new === 1 ? "" : "s") : "No new listings" }),
+                                ev.errors ? " · " + ev.errors + " to retry next time" : "");
+      status(lastResult());
+      break;
+    case "end":
+      if (es) { es.close(); es = null; }
+      refreshData();
+      break;
+  }
+}
+function listen() {
+  if (es) es.close();
+  es = new EventSource("/api/scrape/events");
+  es.onmessage = (m) => { try { onEvent(JSON.parse(m.data)); } catch (e) { console.error(e); } };
+  es.onerror = () => { /* the browser reconnects on its own; the server replays the run */ };
+}
+async function refreshData() {
+  try {
+    const payload = await (await fetch("/api/data", { cache: "no-store" })).json();
+    ingest(payload); render();
+    idle(await (await fetch("/api/status", { cache: "no-store" })).json());
+  } catch (e) { status(dotted("var(--critical)", "Lost connection to the local server")); }
+}
+async function startScrape() {
+  try {
+    const r = await fetch("/api/scrape", { method: "POST" });
+    const body = await r.json();
+    if (r.status === 202 || r.status === 409) { setRunning(true); progress("indeterminate"); status("Starting…"); listen(); }
+    else if (r.status === 429) idle({ nextAllowedIn: body.nextAllowedIn, lastFinishedAt: null });
+    else status(dotted("var(--critical)", "Could not start: " + (body.error || r.status)));
+  } catch (e) { status(dotted("var(--critical)", "The local server is not running")); }
+}
+async function initScrape() {
+  if (!SERVER) {
+    // Static file: nothing can run Python from here, so explain how to get the button.
+    status(lastScrapedText(DATA.lastScrape));
+    sBtn.addEventListener("click", () => status("Scraping runs through the local app. In Terminal, run", el("br"), el("code", { text: "python -m philgeps serve" })));
+    return;
+  }
+  sBtn.addEventListener("click", startScrape);
+  try {
+    const st = await (await fetch("/api/status", { cache: "no-store" })).json();
+    if (st.running) { setRunning(true); progress("indeterminate"); status("Scrape in progress…"); listen(); }
+    else idle(st);
+  } catch (e) { status(dotted("var(--critical)", "The local server is not responding")); }
+}
+
+// ============================================================= detail sheet (springs)
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)");
+const sheet = document.getElementById("sheet"), scrim = document.getElementById("scrim"), head = document.getElementById("sheet-head");
+let sheetX = 0, anim = null, lastFocus = null, isOpen = false;
+const sheetW = () => sheet.offsetWidth + 24;
+function applyX(x) { sheetX = x; sheet.style.transform = `translateX(${x}px)`; scrim.style.opacity = String(Math.max(0, Math.min(1, 1 - x / sheetW()))); }
+// Damping ratio + response (seconds), as Apple parameterises springs. Always starts from the live value.
+function spring(to, { velocity = 0, response = 0.35, damping = 1, done } = {}) {
+  if (anim) cancelAnimationFrame(anim.id);
+  const k = Math.pow(2 * Math.PI / response, 2), c = 4 * Math.PI * damping / response;
+  let x = sheetX, v = velocity, last = performance.now();
+  anim = { id: 0, v };
+  const frame = (now) => {
+    const dt = Math.min(0.064, (now - last) / 1000); last = now;
+    const steps = Math.max(1, Math.ceil(dt / 0.004)), h = dt / steps;
+    for (let i = 0; i < steps; i++) { const a = -k * (x - to) - c * v; v += a * h; x += v * h; }
+    anim.v = v;
+    if (Math.abs(v) < 2 && Math.abs(x - to) < 0.5) { applyX(to); anim = null; done && done(); return; }
+    applyX(x); anim.id = requestAnimationFrame(frame);
+  };
+  anim.id = requestAnimationFrame(frame);
+}
+function openSheet(n, origin) {
+  closePopover(false);
+  lastFocus = origin || document.activeElement;
+  fillSheet(n);
+  const v0 = anim ? anim.v || 0 : 0;
+  if (!anim && !sheet.classList.contains("on")) applyX(sheetW());
+  sheet.classList.add("on"); scrim.classList.add("on"); isOpen = true;
+  document.body.style.overflow = "hidden";
+  if (reduceMotion.matches) applyX(0); else spring(0, { velocity: v0, response: 0.4, damping: 1 });
+  requestAnimationFrame(() => document.getElementById("sh-close").focus({ preventScroll: true }));
+}
+function closeSheet(velocity = 0) {
+  if (!isOpen) return;
+  isOpen = false; scrim.classList.remove("on"); document.body.style.overflow = "";
+  const finish = () => { if (!isOpen) sheet.classList.remove("on"); };
+  if (reduceMotion.matches) { applyX(sheetW()); finish(); } else spring(sheetW(), { velocity, response: 0.35, damping: 1, done: finish });
+  if (lastFocus && document.contains(lastFocus)) lastFocus.focus({ preventScroll: true });
+}
+scrim.addEventListener("click", () => closeSheet());
+document.getElementById("sh-close").addEventListener("click", () => closeSheet());
+addEventListener("keydown", (e) => {
+  if (e.key !== "Escape") return;
+  if (pop.classList.contains("open")) closePopover(); else if (isOpen) closeSheet();
+});
+sheet.addEventListener("keydown", (e) => {
+  if (e.key !== "Tab") return;
+  const f = [...sheet.querySelectorAll("button, a[href]")]; if (!f.length) return;
+  if (e.shiftKey && document.activeElement === f[0]) { e.preventDefault(); f[f.length - 1].focus(); }
+  else if (!e.shiftKey && document.activeElement === f[f.length - 1]) { e.preventDefault(); f[0].focus(); }
+});
+const rubber = (o, dim, c = 0.55) => (o * dim * c) / (dim + c * Math.abs(o));
+const project = (v, d = 0.998) => (v / 1000) * d / (1 - d);
+let drag = null;
+head.addEventListener("pointerdown", (e) => {
+  if (e.target.closest("button") || !isOpen) return;
+  if (anim) { cancelAnimationFrame(anim.id); anim = null; }
+  drag = { id: e.pointerId, startX: e.clientX, base: sheetX, hist: [{ x: e.clientX, t: e.timeStamp }], moved: false };
+  head.setPointerCapture(e.pointerId);
+});
+head.addEventListener("pointermove", (e) => {
+  if (!drag || e.pointerId !== drag.id) return;
+  const dx = e.clientX - drag.startX;
+  if (!drag.moved && Math.abs(dx) < 6) return;
+  drag.moved = true;
+  const raw = drag.base + dx;
+  applyX(raw < 0 ? rubber(raw, sheetW()) : raw);
+  drag.hist.push({ x: e.clientX, t: e.timeStamp });
+  while (drag.hist.length > 2 && e.timeStamp - drag.hist[0].t > 100) drag.hist.shift();
+});
+const endDrag = (e) => {
+  if (!drag || e.pointerId !== drag.id) return;
+  const h = drag.hist, a = h[0], b = h[h.length - 1];
+  const v = b.t > a.t ? ((b.x - a.x) / (b.t - a.t)) * 1000 : 0;
+  const moved = drag.moved; drag = null;
+  if (!moved) return;
+  if (sheetX + project(v) > sheetW() * 0.4) closeSheet(v); else spring(0, { velocity: v, response: 0.3, damping: 0.8 });
+};
+head.addEventListener("pointerup", endDrag);
+head.addEventListener("pointercancel", endDrag);
+addEventListener("resize", () => { if (!isOpen && !anim) applyX(sheetW()); });
+
+function fact(k, v, cls) { return el("div", { class: "fact" + (cls ? " " + cls : "") }, el("div", { class: "k", text: k }), el("div", { class: "v", text: v || "—" })); }
+function fillSheet(n) {
+  document.getElementById("sh-kicker").textContent = (n.nt || "Bid notice") + " · Ref " + n.id;
+  document.getElementById("sh-title").textContent = n.t;
+  document.getElementById("sh-entity").textContent = n.e;
+  const rc = relClose(n._cl), body = document.getElementById("sh-body");
+  body.scrollTop = 0;
+  put(body,
+    el("div", { class: "chip-row" }, el("span", { class: "chip", text: n.s }), n.k !== "Not stated" && el("span", { class: "chip", text: n.k }),
+       n.c && n.c !== n.s && el("span", { class: "chip", text: "PhilGEPS: " + n.c })),
+    el("div", { class: "facts" },
+      fact("Approved budget", n.b == null ? "Not yet fetched" : peso(n.b), "big wide"),
+      fact("Closes", n._cl ? fmtDay(n._cl) + ", " + fmtTime(n._cl) + " · " + rc.text : "—"),
+      fact("Published", fmtDay(n._p)),
+      fact("Procurement mode", n.m, "wide"),
+      fact("Area of delivery", n.a), fact("Region", n.r === "Unknown" ? "Not stated" : n.r),
+      fact("Delivery period", n.dp != null ? n.dp + " days" : "—"), fact("Solicitation no.", n.sol),
+      fact("Status on PhilGEPS", n.st), fact("Sector decided by", n.ss === "title_keywords" ? "Title keywords" : "PhilGEPS category")),
+    n.d && el("h4", { text: "Description" }), n.d && el("p", { class: "desc", text: n.d }),
+    n.cp && el("h4", { text: "Contact" }), n.cp && el("p", { class: "contact", text: n.cp }),
+    el("div", { class: "sheet-actions" },
+      el("a", { class: "btn primary", href: n.u, target: "_blank", rel: "noopener" }, "Open on PhilGEPS ↗"),
+      el("button", { class: "btn", type: "button", onclick: (e) => {
+        const b = e.currentTarget;
+        (navigator.clipboard ? navigator.clipboard.writeText(n.id) : Promise.reject()).then(() => { b.textContent = "Copied"; setTimeout(() => (b.textContent = "Copy reference no."), 1400); }, () => {});
+      } }, "Copy reference no.")),
+    el("p", { class: "fine", text: "If PhilGEPS shows an error or “redirected you too many times”, its server has pinned your browser to a broken backend. Open the link in a private window, or clear cookies for notices.philgeps.gov.ph. The link itself is correct." }));
+}
+
+// ------------------------------------------------------------- start
+applyX(sheetW());
+showTab(location.hash === "#data" ? "data" : "listings", { push: false });
+initScrape();
+setInterval(() => { NOW = new Date(); }, 60000);
+})();
+</script>
+</body>
+</html>
